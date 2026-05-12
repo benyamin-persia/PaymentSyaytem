@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="icon" type="image/x-icon" th:href="@{/favicon.ico}"> <!-- Forces browser to load the served favicon path consistently. -->
+</head>
+<body>
+<h1>Login</h1>
+
+<p th:if="${param.logout}" style="color: green;">You have been logged out successfully.</p>
+<p th:if="${param.error}" style="color: red;">Invalid username or password.</p>
+<p th:if="${param.registered}" style="color: green;">Registration successful. Check your email to verify your account.</p>
+<p th:if="${param.verified}" style="color: green;">Email verified. You can now log in.</p>
+<p th:if="${param.invalidToken}" style="color: red;">Verification link is invalid or expired.</p>
+
+<form th:action="@{/login}" method="post" autocomplete="off">
+    <div>
+        <label for="username">Username:</label>
+        <input id="username" name="username" type="text" autocomplete="off" required>
+    </div>
+
+    <div>
+        <label for="password">Password:</label>
+        <input id="password" name="password" type="password" autocomplete="off" required>
+    </div>
+
+    <button type="submit">Sign In</button>
+</form>
+
+<p>
+    New here? <a th:href="@{/register}">Create account</a>
+</p>
+</body>
+</html>

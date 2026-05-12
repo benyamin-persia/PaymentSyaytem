@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+    <link rel="icon" type="image/x-icon" th:href="@{/favicon.ico}"> <!-- Forces browser to load the served favicon path consistently. -->
+</head>
+<body>
+<h1>Create Account</h1>
+
+<p th:if="${registrationError}" style="color: red;" th:text="${registrationError}">Registration error</p>
+
+<form th:action="@{/register}" th:object="${registrationRequest}" method="post">
+    <div>
+        <label for="username">Username</label>
+        <input id="username" type="text" th:field="*{username}" required>
+        <small th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></small>
+    </div>
+
+    <div>
+        <label for="email">Email</label>
+        <input id="email" type="email" th:field="*{email}" required>
+        <small th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></small>
+    </div>
+
+    <div>
+        <label for="password">Password</label>
+        <input id="password" type="password" th:field="*{password}" required>
+        <small th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></small>
+    </div>
+
+    <button type="submit">Register</button>
+</form>
+
+<p><a th:href="@{/login}">Back to login</a></p>
+</body>
+</html>

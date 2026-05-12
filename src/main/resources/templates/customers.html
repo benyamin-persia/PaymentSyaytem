@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Customers</title>
+    <link rel="icon" type="image/x-icon" th:href="@{/favicon.ico}"> <!-- Forces browser to load the served favicon path consistently. -->
+</head>
+<body>
+<h1>Customers List</h1>
+
+<p sec:authorize="hasRole('ADMIN')">
+    <a th:href="@{/customers/add}">Add New Customer</a>
+</p>
+
+<p>
+    Signed in as: <strong sec:authentication="name">user</strong>
+</p>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Email</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="customer : ${customers}">
+        <td th:text="${customer.id}">1</td>
+        <td th:text="${customer.firstName}">John</td>
+        <td th:text="${customer.lastName}">Doe</td>
+        <td th:text="${customer.email}">john@example.com</td>
+    </tr>
+    </tbody>
+</table>
+
+<hr>
+<form th:action="@{/logout}" method="post">
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+    <button type="submit">Logout</button>
+</form>
+</body>
+</html>

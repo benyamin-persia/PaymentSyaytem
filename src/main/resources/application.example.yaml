@@ -1,0 +1,52 @@
+# Copy to application.yaml and fill in real values (application.yaml is gitignored).
+spring:
+  application:
+    name: payment-system
+  sql:
+    init:
+      mode: never
+  datasource:
+    url: jdbc:mysql://localhost:3306/payment_system?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: "${MYSQL_PASSWORD:changeme}"
+  jpa:
+    defer-datasource-initialization: false
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  main:
+    banner-mode: console
+  mail:
+    host: sandbox.smtp.mailtrap.io
+    port: 2525
+    username: "${MAIL_USERNAME:}"
+    password: "${MAIL_PASSWORD:}"
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+azure:
+  keyvault:
+    uri: https://<your-vault-name>.vault.azure.net
+    database-secret-name: <your-database-password-secret-name>
+server:
+  port: 8081
+jwt:
+  secret: "${JWT_SECRET:changeme-use-openssl-rand-base64-48}"
+  expiration-ms: 86400000
+
+app:
+  base-url: "http://localhost:8081"
+  mail:
+    from: "no-reply@bank.local"
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: when_authorized
