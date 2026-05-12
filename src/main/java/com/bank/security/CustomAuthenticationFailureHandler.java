@@ -5,6 +5,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
@@ -21,7 +22,8 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
                                         AuthenticationException exception) throws IOException, ServletException {
         String username = request.getParameter("username");
-        if (username != null && !username.isBlank()) {                                                        // Concept: Validation | Why: blocks invalid input before business logic executes.
+        // Only count real wrong-password failures. Disabled/unverified accounts used to hit this path with the *correct* password and still incremented attempts → lockout before verify.
+        if (username != null && !username.isBlank() && exception instanceof BadCredentialsException) { // BadCredentials means wrong password or unknown user, not "account disabled".
             registrationService.onAuthenticationFailure(username);
         }
         response.sendRedirect("/login?error");

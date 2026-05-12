@@ -74,7 +74,10 @@ public class RegistrationService {
         }
 
         AppUser user = token.getUser();
-        user.setEnabled(true);
+        user.setEnabled(true); // Email proved; Spring Security may now accept this principal after password check.
+        user.setAccountNonLocked(true); // Clear lockout from failed logins while the account was still disabled (same message hid the real reason).
+        user.setFailedAttempt(0); // Reset counter so verify flow does not inherit bogus lock state.
+        user.setLockTime(null); // Drop stale lock timestamp tied to pre-verify login attempts.
         appUserRepository.save(user);
         verificationTokenRepository.delete(token);
         return true;

@@ -19,7 +19,8 @@ public class AppUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        AppUser appUser = appUserRepository.findByUsername(username)
+        AppUser appUser = appUserRepository.findByUsername(username) // Primary login key from the form / API "username" field.
+                .or(() -> appUserRepository.findByEmail(username)) // Allow the same field to carry email so users are not forced to remember which identifier they typed at signup.
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
 
         registrationService.unlockIfLockTimeExpired(appUser);
