@@ -55,3 +55,4 @@ maven-error.txt
 ### Large local-only assets (optional) ###
 *.pdf
 *.docx
+*.zip
