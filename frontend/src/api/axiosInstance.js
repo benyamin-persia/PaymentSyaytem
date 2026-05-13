@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const api = axios.create({
-  baseURL: 'http://localhost:8080', // Base URL: every request starts from the Spring Boot server.
+  baseURL: 'http://localhost:8081', // Base URL: Spring Boot is configured to run on port 8081 in this project.
 })
 
 api.interceptors.request.use((config) => { // Request interceptor: runs before Axios sends each request.

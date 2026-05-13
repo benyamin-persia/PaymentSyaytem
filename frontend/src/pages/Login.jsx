@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useAuth } from '../auth/AuthContext'
+import { useAuth } from '../auth/useAuth'
 
 function Login() {
   const [username, setUsername] = useState('') // Controlled input: React state is the source of truth for this field.
