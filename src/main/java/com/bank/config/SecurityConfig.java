@@ -11,6 +11,11 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 @Configuration
 @EnableMethodSecurity
@@ -36,6 +41,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Enables browser requests from the React dev server before auth rules run.
                 .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**")) // REST clients cannot send CSRF tokens like browsers; APIs under /api/** skip CSRF checks.
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/error").permitAll()
@@ -72,5 +78,18 @@ public class SecurityConfig {
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); // JWT runs first so /api/** sees an Authentication before access decisions.
 
         return http.build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration(); // CORS policy tells browsers which frontend origins may call this API.
+        configuration.setAllowedOrigins(List.of("http://localhost:5173")); // Vite dev server origin; the port must match the React app exactly.
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // OPTIONS supports browser preflight checks before real API calls.
+        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type")); // Authorization allows the React app to send Bearer JWT headers.
+        configuration.setAllowCredentials(true); // Allows credential-style browser requests without using a wildcard origin.
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource(); // Maps the CORS policy to URL patterns.
+        source.registerCorsConfiguration("/**", configuration); // Applies the policy to API and auth endpoints.
+        return source;
     }
 }

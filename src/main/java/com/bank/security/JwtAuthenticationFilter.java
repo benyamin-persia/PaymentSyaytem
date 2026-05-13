@@ -26,7 +26,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(
             @NonNull HttpServletRequest request,
-            @NonNull HttpServletResponse response,
+            @NonNull HttpServletResponse response ,
             @NonNull FilterChain filterChain) throws ServletException, IOException {
         String authHeader = request.getHeader("Authorization"); // Standard place REST clients send Bearer tokens.
         if (authHeader == null || !authHeader.startsWith("Bearer ")) { // No JWT path: leave security context unchanged (session or anonymous).
